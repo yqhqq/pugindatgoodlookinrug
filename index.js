@@ -1,117 +1,336 @@
-const canvas = document.querySelector("canvas");
-const secondsCount = document.querySelector(".seconds");
-const level = document.querySelector(".grade");
-const context = canvas.getContext("2d");
-const pugDimensions = { width: 353 * 1.2, height: 325 * 1.2 };
+const wrapper = document.querySelector(".wrapper")
+const neck = document.querySelector(".neck")
+const wowEl = document.querySelector("#wows")
 
+const largeWowContainer = document.querySelector("#largewowcontainer")
+const rainbowWowContainer = document.querySelector("#rainbowwowcontainer")
+const dogePrimeContainer = document.querySelector("#dogeprimecontainer")
+const secretWowContainer = document.querySelector("#secretwowcontainer")
+const fibowowcontainer = document.querySelector("#fibowowcontainer")
 
-const levels = {
-  5: "Sr Assistant",
-  10: "Jr Honoror",
-  15: "Master Honoror",
-  35: "S Tier Honoror",
-  65: "Junior Acolyte",
-  105: "Acolyte",
-  150: "Senior Acolyte",
-  250: "Priest",
-  450: "Sage",
-  650: "Hermit",
-  1000: "Senior Hermit",
-  1500: "CEO",
-  2500: "Pope",
-  3500: "Underlord",
-  4500: "Lord",
-  10500: "OverLord",
-  20500: "King",
-  30500: "Anunnaki"
+const largewowEl = document.querySelector("#largeWows")
+const lengthEl = document.querySelector("#length")
+const rainbowsEl = document.querySelector("#rainbow")
+const dogePrimeEl = document.querySelector("#dogeprime")
+const secretWowEl = document.querySelector("#secretwow")
+const fiboWowEl = document.querySelector("#fibo")
+
+let wows = 0
+let largewows = 0
+let rainbowwows = 0
+let secretwows = 0
+let minidoges = 0
+const primeWows = []
+const largeWowsRequired = 10
+
+let fibonacciChallengeStarted = false
+let fibonacciChallengeComplete = false
+const fibonacciWows = []
+const fibonacciSecretWows = []
+let dogePrime = false
+
+document.querySelector(".print").addEventListener("click", () => {
+  if (fibonacciChallengeComplete) {
+    document.querySelector(".head").style.display = "none"
+    document.querySelector(".hatted").style.display = "block"
+  }
+  window.print()
+})
+
+const observer = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio > 0) {
+        injectNeck(entry)
+      }
+    })
+  },
+  { rootMargin: "0px 0px 200% 0px" }
+)
+
+document.addEventListener("click", onBodyClick)
+
+window.onscroll = function(ev) {
+  if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+    const lastEl = document.querySelector(".neck:last-child")
+    injectNeck({ target: lastEl })
+  }
 }
 
-const startTime = Date.now();
+function injectNeck(entry) {
+  // Stops observing the old neck element
+  observer.unobserve(entry.target)
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-context.translate(window.innerWidth / 2, window.innerHeight / 2);
+  const clonedNeck = neck.cloneNode(true)
+  wrapper.appendChild(clonedNeck)
+  observer.observe(clonedNeck)
 
-const image = new Image();
-image.src = "./assets/pug.png"; // Photo credit to Matthew Henry (https://unsplash.com/photos/U5rMrSI7Pn4)
-
-const loopingPugs = 40; // 125 pugs required to cover a full 4K television screen. Tested via Firefox DevTools
-const offsetDistance = 120;
-let currentOffset = 0;
-
-const movementRange = 200
-
-const mouseOffset = {
-  x: 0,
-  y: 0
+  injectWow()
 }
 
-const movementOffset = {
-  x: 0,
-  y: 0
-}
+function injectWow() {
+  wows++
+  wowEl.innerText = wows
 
-image.onload = () => {
-  startLooping();
-};
+  const newWow = document.createElement("div")
+  newWow.className = "textwow"
+  newWow.innerText = "WOW"
+  newWow.style.left = 100 + Math.random() * (window.innerWidth - 300) + "px"
+  newWow.style.top = wrapper.offsetHeight - 200 + "px"
+  document.body.appendChild(newWow)
 
-window.onresize = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  context.setTransform(1, 0, 0, 1, 0, 0); //Reset the canvas context
-  context.translate(window.innerWidth / 2, window.innerHeight / 2);
-};
-
-window.addEventListener('mousemove', onMouseMove)
-
-function draw(offset, loopCount) {
-
-  let currentPercentage = (loopingPugs - loopCount) / loopingPugs
-  context.drawImage(
-    image,
-    -pugDimensions.width / 2 - offset/2 + (movementOffset.x * currentPercentage),
-    -pugDimensions.height / 2 - offset/2 + (movementOffset.y * currentPercentage),
-    pugDimensions.width + offset,
-    pugDimensions.height + offset
-  );
-}
-
-function onMouseMove(e) {
-  mouseOffset.x = (e.clientX - window.innerWidth / 2) / window.innerWidth / 2 * movementRange
-  mouseOffset.y = (e.clientY - window.innerHeight / 2) / window.innerHeight / 2 * movementRange
-}
-
-function lerp(start, end, amount) {
-  return start*(1-amount)+end*amount
-}
-
-function loopDraw() {
-
-  movementOffset.x = lerp(movementOffset.x, mouseOffset.x, 0.05)
-  movementOffset.y = lerp(movementOffset.y, mouseOffset.y, 0.05)
-
-  for (let i = loopingPugs; i >= 1; i--) {
-    draw(i * offsetDistance + currentOffset, i);
+  if (isPrime(wows)) {
+    primeWows.push(newWow)
   }
 
-  draw(offsetDistance, 1);
-
-  currentOffset++;
-  if (currentOffset >= offsetDistance) {
-    currentOffset = 0;
+  if (isFibonacci(wows)) {
+    fibonacciWows.push(newWow)
   }
 
-  const newTime = Math.floor((Date.now() - startTime) / 1000);
-
-  secondsCount.innerText = newTime;
-
-  if(levels[newTime]) {
-    level.innerText = levels[newTime]
+  if (wows === 10) {
+    lengthEl.innerText = "wow wow"
   }
 
-  requestAnimationFrame(loopDraw);
+  if (wows === 50) {
+    lengthEl.innerText = "wow wow wow"
+  }
+
+  if (wows === 100) {
+    lengthEl.innerText = "much wow"
+  }
+
+  if (wows === 150) {
+    lengthEl.innerText = "long much wow"
+  }
+
+  if (wows === 250) {
+    lengthEl.innerText = "very long much wow"
+  }
+
+  if (wows === 500) {
+    lengthEl.innerText = "wow very long much wow"
+  }
+
+  if (wows === 1000) {
+    lengthEl.innerText = "much wow very long much wow!"
+  }
+
+  if (wows === 2000) {
+    lengthEl.innerText = "much wow very long much wow!!"
+  }
+
+  if (wows === 3000) {
+    lengthEl.innerText = "much wow very long much wow!!!"
+  }
+
+  if (wows === 5000) {
+    lengthEl.innerText = "!!much wow very long much wow!!"
+  }
+
+  if (wows === 10000) {
+    lengthEl.innerText = "many many wow amaze"
+  }
+
+  if (wows === 30000) {
+    lengthEl.innerText = "amaze wow dont forget to print!"
+  }
+
+  if (wows === 50000) {
+    lengthEl.innerText = "wowwowowowowowowowowowowwoow"
+  }
+
+  if (wows === 80000) {
+    lengthEl.innerText = "wowwowowowowowowowowowowwooweeeeeeeeee"
+  }
+
+  if (wows > 200 && Math.random() > 0.99) {
+    injectLargeWow()
+  }
 }
 
-function startLooping() {
-  requestAnimationFrame(loopDraw);
+function injectLargeWow() {
+  largewows++
+  largewowEl.innerText = largewows
+
+  largeWowContainer.classList.remove("hidden")
+
+  const newWow = document.createElement("div")
+  newWow.className = "largewow"
+  newWow.innerText = "WOW"
+  newWow.style.left = "50%"
+  newWow.style.top = wrapper.offsetHeight - 200 + "px"
+  document.body.appendChild(newWow)
+
+  // Release the text about the large wows on exactly 15
+  if(largewows === largeWowsRequired) {
+    rainbowwowcontainer.classList.remove("hidden")
+    dogePrimeContainer.classList.remove("hidden")
+  }
 }
+
+function isPrime(n) {
+  if (n < 2) return false
+  var q = Math.floor(Math.sqrt(n))
+
+  for (var i = 2; i <= q; i++) {
+    if (n % i == 0) {
+      return false
+    }
+  }
+
+  return true
+}
+
+function isSquare(n) {
+  return n > 0 && Math.sqrt(n) % 1 === 0
+}
+
+function isFibonacci(numberToCheck) {
+  return (
+    isSquare(5 * numberToCheck * numberToCheck + 4) ||
+    isSquare(5 * numberToCheck * numberToCheck - 4)
+  )
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+}
+
+function onBodyClick(e) {
+  if (e.target.className === "textwow" && largewows >= largeWowsRequired) {
+    rainbowwows++
+    e.target.classList.add("rainbow")
+
+    rainbowsEl.innerText = rainbowwows
+
+    let count = 0
+    // Check if they have achieved dogePrime
+    let isPrime = primeWows.every((wowEl) => {
+      count++
+      return wowEl.classList.contains("rainbow")
+    })
+
+    // Activate doge prime
+    if (dogePrime === false && isPrime === true) {
+      dogePrime = true
+      dogePrimeEl.innerText = "ACTIVE"
+      setupSecretWows()
+    } else if (count !== primeWows.length) {
+      dogePrimeEl.innerText = "INACTIVE (" + count + '/' + primeWows.length + ")"
+    }
+  }
+
+  if (e.target.className === "secretwow") {
+    e.target.classList.add("found")
+    secretwows++
+    secretWowEl.innerText = secretwows
+
+    if (secretwows === 100) {
+      fibonacciChallengeStarted = true
+      fibowowcontainer.classList.remove("hidden")
+    }
+  }
+
+  if (fibonacciChallengeStarted) {
+    if (
+      e.target.classList.contains("textwow") ||
+      e.target.classList.contains("secretwow")
+    ) {
+      if (e.target.classList.contains("spinLeft")) {
+        e.target.classList.remove("spinLeft")
+        e.target.classList.add("spinRight")
+      } else if (e.target.classList.contains("spinRight")) {
+        e.target.classList.remove("spinRight")
+        e.target.classList.add("spinLeft")
+      } else {
+        e.target.classList.add("spinLeft")
+      }
+
+      checkAllFiboWows()
+    }
+  }
+}
+
+function checkAllFiboWows() {
+  let successConfirmed = true
+  let innerText = 'INACTIVE '
+
+  let right = true
+  let chainOfLengthRegular = 0
+  for (let i = 0; i < fibonacciWows.length; i++) {
+    if (fibonacciWows[i].classList.contains(right ? "spinRight" : "spinLeft")) {
+      right = !right
+      chainOfLengthRegular++
+    } else {
+      successConfirmed = false
+      break
+    }
+  }
+
+  innerText += "\n (" + chainOfLengthRegular + '/' + fibonacciWows.length + ') Regular (LRL) \n'
+
+  right = false
+  let chainofLengthSecret = 0
+  for (let i = 0; i < fibonacciSecretWows.length; i++) {
+    if (
+      fibonacciSecretWows[i].classList.contains(
+        right ? "spinRight" : "spinLeft"
+      )
+    ) {
+      chainofLengthSecret++
+      right = !right
+    } else {
+      successConfirmed = false
+      break
+    }
+  }
+
+  innerText += "(" + chainofLengthSecret + '/' + fibonacciSecretWows.length + ') Secret (RLR)'
+
+  if (successConfirmed) {
+    fibonacciChallengeComplete = true
+    fibo.innerText = "COMPLETE (NOW PRINT!)"
+  } else {
+    fibonacciChallengeComplete = false
+    fibo.innerText = innerText
+  }
+}
+
+function setupSecretWows() {
+  secretWowContainer.classList.remove("hidden")
+
+  const allnecks = document.querySelectorAll(".neck")
+  let allnecksAsArray = Array.apply(null, allnecks)
+  allnecksAsArray.shift() // remove first item
+
+  shuffleArray(allnecksAsArray)
+  shuffleArray(allnecksAsArray)
+
+  // Do this for first 100 shuffled neck pieces
+  let total = 100
+
+  for (let i = 0; i < total; i++) {
+    let neckItem = allnecksAsArray[i]
+    let pieces = neckItem.innerText.split("\n")
+    const pieceIndex = Math.floor(Math.random() * (pieces.length - 1))
+    const injectionIndex = 5 + Math.floor(Math.random() * 18)
+    pieces[pieceIndex] =
+      pieces[pieceIndex].slice(0, injectionIndex) +
+      '<span class="secretwow">WOW</span>' +
+      pieces[pieceIndex].slice(injectionIndex + 3)
+    neckItem.innerHTML = pieces.join("\n")
+  }
+
+  const allSecretwows = document.querySelectorAll(".secretwow")
+  const secretWowsAsArray = Array.apply(null, allSecretwows)
+  for (let i = 0; i < secretWowsAsArray.length; i++) {
+    if (isFibonacci(i + 1)) {
+      fibonacciSecretWows.push(secretWowsAsArray[i])
+    }
+  }
+}
+
+observer.observe(neck)
