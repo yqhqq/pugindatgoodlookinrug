@@ -16,9 +16,9 @@ const secretWowEl = document.querySelector("#secretwow")
 const fiboWowEl = document.querySelector("#fibo")
 
 let wows = 0
-let largewows = 0
-let rainbowwows = 0
-let secretwows = 0
+let largeRees = 0
+let rainbowRees = 0
+let secretRees = 0
 let minidoges = 0
 const primeWows = []
 const largeWowsRequired = 10
@@ -74,7 +74,7 @@ function injectWow() {
 
   const newWow = document.createElement("div")
   newWow.className = "textwow"
-  newWow.innerText = "WOW"
+  newWow.innerText = "REE"
   newWow.style.left = 100 + Math.random() * (window.innerWidth - 300) + "px"
   newWow.style.top = wrapper.offsetHeight - 200 + "px"
   document.body.appendChild(newWow)
@@ -88,59 +88,59 @@ function injectWow() {
   }
 
   if (wows === 10) {
-    lengthEl.innerText = "wow wow"
+    lengthEl.innerText = "Ree Ree"
   }
 
   if (wows === 50) {
-    lengthEl.innerText = "wow wow wow"
+    lengthEl.innerText = "wow wow wow Ree Ree Ree"
   }
 
   if (wows === 100) {
-    lengthEl.innerText = "much wow"
+    lengthEl.innerText = "much Ree"
   }
 
   if (wows === 150) {
-    lengthEl.innerText = "long much wow"
+    lengthEl.innerText = "long much Ree"
   }
 
   if (wows === 250) {
-    lengthEl.innerText = "very long much wow"
+    lengthEl.innerText = "very long much Ree"
   }
 
   if (wows === 500) {
-    lengthEl.innerText = "wow very long much wow"
+    lengthEl.innerText = "wRee very long much Ree"
   }
 
   if (wows === 1000) {
-    lengthEl.innerText = "much wow very long much wow!"
+    lengthEl.innerText = "much Ree very long much Ree!"
   }
 
   if (wows === 2000) {
-    lengthEl.innerText = "much wow very long much wow!!"
+    lengthEl.innerText = "much Ree very long much Ree!!"
   }
 
   if (wows === 3000) {
-    lengthEl.innerText = "much wow very long much wow!!!"
+    lengthEl.innerText = "much Ree very long much Ree!!!"
   }
 
   if (wows === 5000) {
-    lengthEl.innerText = "!!much wow very long much wow!!"
+    lengthEl.innerText = "!!much Ree very long much Ree!!"
   }
 
   if (wows === 10000) {
-    lengthEl.innerText = "many many wow amaze"
+    lengthEl.innerText = "many many Ree amaze"
   }
 
   if (wows === 30000) {
-    lengthEl.innerText = "amaze wow dont forget to print!"
+    lengthEl.innerText = "amaze Ree dont forget to print!"
   }
 
   if (wows === 50000) {
-    lengthEl.innerText = "wowwowowowowowowowowowowwoow"
+    lengthEl.innerText = "reerererererererererererrer"
   }
 
   if (wows === 80000) {
-    lengthEl.innerText = "wowwowowowowowowowowowowwooweeeeeeeeee"
+    lengthEl.innerText = "ReeeRERErerererererererereeeeeeeeeeeeee"
   }
 
   if (wows > 200 && Math.random() > 0.99) {
@@ -156,7 +156,7 @@ function injectLargeWow() {
 
   const newWow = document.createElement("div")
   newWow.className = "largewow"
-  newWow.innerText = "WOW"
+  newWow.innerText = "REE"
   newWow.style.left = "50%"
   newWow.style.top = wrapper.offsetHeight - 200 + "px"
   document.body.appendChild(newWow)
@@ -228,7 +228,7 @@ function onBodyClick(e) {
     secretwows++
     secretWowEl.innerText = secretwows
 
-    if (secretwows === 100) {
+    if (secretwows === 1) {
       fibonacciChallengeStarted = true
       fibowowcontainer.classList.remove("hidden")
     }
